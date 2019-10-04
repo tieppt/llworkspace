@@ -45,7 +45,12 @@ export class TokenInterceptor implements HttpInterceptor {
       catchError(e => {
         if (shouldHandleAuthFail) {
           this.auth.logout();
-          this.router.navigateByUrl('/login');
+          const returnUrl = this.router.url || '';
+          this.router.navigate(['/login'], {
+            queryParams: {
+              returnUrl
+            }
+          });
         }
         throw e;
       })
