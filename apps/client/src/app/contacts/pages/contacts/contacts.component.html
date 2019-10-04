@@ -1,0 +1,18 @@
+<p>contacts works!</p>
+
+<div *ngIf="contacts$ | async as contacts">
+  <nz-table #table [nzData]="contacts">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Value</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let data of table.data">
+        <td>{{ data.type }}</td>
+        <td>{{ data.value }}</td>
+      </tr>
+    </tbody>
+  </nz-table>
+</div>

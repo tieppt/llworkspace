@@ -1,0 +1,65 @@
+<form nz-form [formGroup]="loginForm" class="login-form" (ngSubmit)="login()">
+  <nz-form-item>
+    <nz-form-control
+      nzHasFeedback
+      [nzErrorTip]="emailErrorTpl"
+      [nzValidateStatus]="getControlValidateStatus('email')"
+    >
+      <nz-input-group nzPrefixIcon="user">
+        <input
+          type="text"
+          nz-input
+          formControlName="email"
+          placeholder="Email"
+        />
+      </nz-input-group>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-control
+      nzHasFeedback
+      [nzErrorTip]="passErrorTpl"
+      [nzValidateStatus]="getControlValidateStatus('password')"
+    >
+      <nz-input-group nzPrefixIcon="lock">
+        <input
+          type="password"
+          nz-input
+          formControlName="password"
+          placeholder="Password"
+        />
+      </nz-input-group>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-control>
+      <button
+        type="submit"
+        class="login-form-button"
+        nz-button
+        [nzLoading]="loading"
+        [nzType]="'primary'"
+      >
+        Log in
+      </button>
+    </nz-form-control>
+  </nz-form-item>
+</form>
+
+<ng-template #emailErrorTpl>
+  <ng-container *ngIf="emailCtrl.hasError('email')">
+    The input is not valid E-mail!
+  </ng-container>
+  <ng-container *ngIf="emailCtrl.hasError('required')">
+    Please input your E-mail!
+  </ng-container>
+</ng-template>
+
+<ng-template #passErrorTpl>
+  <ng-container *ngIf="passwordCtrl.hasError('minlength')">
+    Min length is {{ passwordCtrl.getError('minlength').requiredLength }}
+  </ng-container>
+  <ng-container *ngIf="passwordCtrl.hasError('required')">
+    Please input your Password!
+  </ng-container>
+</ng-template>

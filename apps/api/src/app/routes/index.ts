@@ -8,7 +8,7 @@ export const router = express.Router();
 
 const user = {
   email: 'test@test.com',
-  password: '123456',
+  password: '12345678',
   username: 'usertest'
 };
 
@@ -39,6 +39,7 @@ router.get('/user', isAuthorized, (req: Request, res: Response) => {
 router.get('/contacts', isAuthorized, (req: Request, res: Response) => {
   return res.json([
     { type: 'email', value: 'some@test.com' },
-    { type: 'phone', value: '0123456789' }
+    { type: 'phone', value: '0123456789' },
+    { type: 'address', value: 'some address' }
   ]);
 });

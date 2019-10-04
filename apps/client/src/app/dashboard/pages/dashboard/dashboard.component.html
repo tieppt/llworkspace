@@ -1,0 +1,6 @@
+<p>
+  Welcome,
+  <ng-container *ngIf="user$ | async as user">
+    {{ user.username }}
+  </ng-container>
+</p>

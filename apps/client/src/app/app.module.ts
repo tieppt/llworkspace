@@ -3,13 +3,15 @@ import { NgModule } from '@angular/core';
 
 import { AppComponent } from './app.component';
 import { NgZorroAntdModule, NZ_I18N, en_US } from 'ng-zorro-antd';
-import { FormsModule } from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { registerLocaleData } from '@angular/common';
 import en from '@angular/common/locales/en';
 import { AppRoutingModule } from './app-routing.module';
 import { IconsProviderModule } from './icons-provider.module';
+import { CoreModule } from './core/core.module';
+import { AuthModule } from './auth/auth.module';
 
 registerLocaleData(en);
 
@@ -18,11 +20,14 @@ registerLocaleData(en);
   imports: [
     BrowserModule,
     NgZorroAntdModule,
-    FormsModule,
+    ReactiveFormsModule,
     HttpClientModule,
     BrowserAnimationsModule,
-    AppRoutingModule,
-    IconsProviderModule
+    IconsProviderModule,
+    CoreModule,
+    AuthModule,
+    // should be end of other route module
+    AppRoutingModule
   ],
   providers: [{ provide: NZ_I18N, useValue: en_US }],
   bootstrap: [AppComponent]
