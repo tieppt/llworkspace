@@ -5,7 +5,7 @@
   "scripts": {
     "ng": "ng",
     "nx": "nx",
-    "start": "ng serve --proxy-config=./apps/client/proxy.conf.json --port=4500",
+    "start": "ng serve --port=4500",
     "build": "ng build",
     "test": "ng test",
     "lint": "nx workspace-lint && ng lint",
@@ -39,12 +39,13 @@
     "@angular/platform-browser-dynamic": "^8.2.0",
     "@angular/router": "^8.2.0",
     "@nrwl/angular": "8.6.0",
+    "body-parser": "^1.19.0",
     "core-js": "^2.5.4",
-    "ng-zorro-antd": "^8.1.2",
+    "express": "4.17.1",
+    "ng-zorro-antd": "^8.3.1",
     "reflect-metadata": "^0.1.12",
     "rxjs": "~6.4.0",
-    "zone.js": "^0.9.1",
-    "express": "4.17.1"
+    "zone.js": "^0.9.1"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "^0.803.3",

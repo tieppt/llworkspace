@@ -4,12 +4,17 @@
  **/
 
 import * as express from 'express';
+import * as bodyParser from 'body-parser';
+import { router } from './app/routes';
 
 const app = express();
 
-app.get('/api', (req, res) => {
-  res.send({ message: 'Welcome to api!' });
-});
+app.use(bodyParser.urlencoded({
+  extended: true
+}));
+app.use(bodyParser.json());
+
+app.use('/api', router);
 
 const port = process.env.port || 3333;
 const server = app.listen(port, () => {
