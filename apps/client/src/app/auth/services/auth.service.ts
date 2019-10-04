@@ -1,8 +1,9 @@
-import { Injectable } from '@angular/core';
-import { from, Observable, of, BehaviorSubject } from 'rxjs';
-import { tap } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { Router } from '@angular/router';
 import { BASE_API_URL } from '@env/environment';
+import { asyncScheduler, BehaviorSubject, Observable, of } from 'rxjs';
+import { observeOn, switchMapTo, tap } from 'rxjs/operators';
 
 interface LoginRequest {
   email: string;
@@ -21,11 +22,29 @@ export class AuthService {
   public isAuthenticated$ = this._isAuthenticated$.asObservable();
   accessToken = '';
 
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient, private router: Router) {
     const token = localStorage.getItem('accessToken');
     this.accessToken = token;
     if (token) {
       this._isAuthenticated$.next(true);
+      // check if token still valid
+      of(true)
+        .pipe(
+          observeOn(asyncScheduler),
+          switchMapTo(
+            this.http.get(`${BASE_API_URL}/user`, {
+              headers: {
+                NotHandleAuthFail: 'no'
+              }
+            })
+          )
+        )
+        .subscribe({
+          error: () => {
+            this.logout();
+            this.router.navigateByUrl('/login');
+          }
+        });
     }
   }
 
