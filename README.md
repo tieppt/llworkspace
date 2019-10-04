@@ -1,5 +1,13 @@
 # llworkspace
 
+
+## Development
+
+Start Frontend: `npm start`
+
+Start Mock API: `npm run api:serve`
+
+
 This project was generated using [Nx](https://nx.dev).
 
 <p align="center"><img src="https://raw.githubusercontent.com/nrwl/nx/master/nx-logo.png" width="450"></p>
