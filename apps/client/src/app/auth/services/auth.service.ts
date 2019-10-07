@@ -3,6 +3,7 @@ import { Observable, BehaviorSubject } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { BASE_API_URL } from '@env/environment';
+import { HTTPStatusCode } from '../../core/models/http-status-code';
 
 interface LoginRequest {
   email: string;
@@ -34,7 +35,9 @@ export class AuthService {
         }
       }).subscribe({
         error: (e) => {
-          this.logout();
+          if (e.status === HTTPStatusCode.UnAuthorized) {
+            this.logout();
+          }
         }
       })
     }

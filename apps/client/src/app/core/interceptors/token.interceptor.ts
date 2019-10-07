@@ -1,26 +1,13 @@
-import {
-  HttpHandler,
-  HttpHeaderResponse,
-  HttpInterceptor,
-  HttpProgressEvent,
-  HttpRequest,
-  HttpResponse,
-  HttpSentEvent,
-  HttpUserEvent
-} from '@angular/common/http';
+import { HttpHandler, HttpHeaderResponse, HttpInterceptor, HttpProgressEvent, HttpRequest, HttpResponse, HttpSentEvent, HttpUserEvent } from '@angular/common/http';
 import { Injectable, Injector } from '@angular/core';
-import { Observable } from 'rxjs';
-import { AuthService } from '../../auth/services/auth.service';
-import { catchError, tap } from 'rxjs/operators';
 import { Router } from '@angular/router';
-
-enum HTTPStatusCode {
-  UnAuthorized = 401
-}
+import { Observable } from 'rxjs';
+import { catchError, tap } from 'rxjs/operators';
+import { AuthService } from '../../auth/services/auth.service';
+import { HTTPStatusCode } from '../models/http-status-code';
 
 @Injectable()
 export class TokenInterceptor implements HttpInterceptor {
-
   constructor(private injector: Injector) {}
   intercept(
     req: HttpRequest<any>,

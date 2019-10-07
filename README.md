@@ -7,6 +7,16 @@ Start Frontend: `npm start`
 
 Start Mock API: `npm run api:serve`
 
+Default User:
+
+```ts
+const user = {
+  email: 'test@test.com',
+  password: '12345678',
+  username: 'usertest'
+};
+```
+
 
 This project was generated using [Nx](https://nx.dev).
 
