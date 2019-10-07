@@ -21,7 +21,7 @@ router.post('/login', (req: Request, res: Response) => {
   console.log(JSON.stringify(req.body));
   if (email === user.email && password === user.password) {
     return res.json({
-      token: email
+      token: 'TEST_TOKEN' + Date.now()
     });
   }
   res.status(401).json({
@@ -31,13 +31,17 @@ router.post('/login', (req: Request, res: Response) => {
 });
 
 router.get('/user', isAuthorized, (req: Request, res: Response) => {
-  return res.json({
+  return res.header({
+    'x-token': 'TEST_TOKEN' + Date.now()
+  }).json({
     username: user.username
   });
 });
 
 router.get('/contacts', isAuthorized, (req: Request, res: Response) => {
-  return res.json([
+  return res.header({
+    'x-token': 'TEST_TOKEN' + Date.now()
+  }).json([
     { type: 'email', value: 'some@test.com' },
     { type: 'phone', value: '0123456789' },
     { type: 'address', value: 'some address' }

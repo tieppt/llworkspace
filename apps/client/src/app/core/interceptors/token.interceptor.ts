@@ -8,17 +8,20 @@ import {
   HttpSentEvent,
   HttpUserEvent
 } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, Injector } from '@angular/core';
 import { Observable } from 'rxjs';
 import { AuthService } from '../../auth/services/auth.service';
-import { startWith, catchError } from 'rxjs/operators';
+import { catchError, tap } from 'rxjs/operators';
 import { Router } from '@angular/router';
+
+enum HTTPStatusCode {
+  UnAuthorized = 401
+}
 
 @Injectable()
 export class TokenInterceptor implements HttpInterceptor {
-  tokenType = '';
 
-  constructor(private auth: AuthService, private router: Router) {}
+  constructor(private injector: Injector) {}
   intercept(
     req: HttpRequest<any>,
     next: HttpHandler
@@ -29,24 +32,45 @@ export class TokenInterceptor implements HttpInterceptor {
     | HttpResponse<any>
     | HttpUserEvent<any>
   > {
+    let request = req;
     // when request to authorize endpoint, this will handle when auth fail
-    // then retur to login page
-    const shouldHandleAuthFail = !req.headers.get('NotHandleAuthFail');
-    let request = req.clone({
-      headers: req.headers.delete('NotHandleAuthFail')
-    });
-    request = req.clone({
-      setHeaders: {
-        Authorization: `${this.tokenType} ${this.auth.accessToken}`
-      }
-    });
+    // then return to login page
+    const notHandleAuthFail = req.headers.get('NotHandleAuthFail');
+    if (notHandleAuthFail) {
+      request = request.clone({
+        headers: req.headers.delete('NotHandleAuthFail')
+      });
+    }
+    const notAttachToken = req.headers.get('NotAttachToken');
+    const auth = this.injector.get(AuthService);
+    const router = this.injector.get(Router);
+    if (notAttachToken) {
+      request = request.clone({
+        headers: req.headers.delete('NotAttachToken')
+      });
+    } else if (auth) {
+      request = request.clone({
+        setHeaders: {
+          Authorization: auth.accessToken
+        }
+      });
+    }
 
     return next.handle(request).pipe(
+      tap(response => {
+        if (response instanceof HttpResponse) {
+          // server renew token on every request
+          const token = response.headers.get('x-token');
+          if (token && auth) {
+            auth.storeCredentials(token);
+          }
+        }
+      }),
       catchError(e => {
-        if (shouldHandleAuthFail) {
-          this.auth.logout();
-          const returnUrl = this.router.url || '';
-          this.router.navigate(['/login'], {
+        if (e.status === HTTPStatusCode.UnAuthorized && !notHandleAuthFail) {
+          auth.logout();
+          const returnUrl = router.url || '';
+          router.navigate(['/login'], {
             queryParams: {
               returnUrl
             }

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { from, Observable, of, BehaviorSubject } from 'rxjs';
+import { Observable, BehaviorSubject } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { BASE_API_URL } from '@env/environment';
@@ -26,6 +26,17 @@ export class AuthService {
     this.accessToken = token;
     if (token) {
       this._isAuthenticated$.next(true);
+      this.http.get(`${BASE_API_URL}/user`, {
+        headers: {
+          NotAttachToken: 'Y',
+          NotHandleAuthFail: 'Y',
+          Authorization: token
+        }
+      }).subscribe({
+        error: (e) => {
+          this.logout();
+        }
+      })
     }
   }
 
@@ -33,21 +44,30 @@ export class AuthService {
     return this.http
       .post<LoginResponse>(`${BASE_API_URL}/login`, loginReq, {
         headers: {
-          NotHandleAuthFail: 'no'
+          NotAttachToken: 'Y',
+          NotHandleAuthFail: 'Y'
         }
       })
       .pipe(
         tap((res: LoginResponse) => {
-          localStorage.setItem('accessToken', res.token);
-          this.accessToken = res.token;
-          this._isAuthenticated$.next(true);
+          this.storeCredentials(res.token)
         })
       );
   }
 
   logout() {
-    this.accessToken = '';
-    this._isAuthenticated$.next(false);
-    localStorage.removeItem('accessToken');
+    this.storeCredentials('', 'rm');
+  }
+
+  storeCredentials(token = '', addOrRemove: 'add' | 'rm' = 'add', emit = true) {
+    this.accessToken = token;
+    if (emit) {
+      this._isAuthenticated$.next(!!token);
+    }
+    if (addOrRemove === 'add') {
+      localStorage.setItem('accessToken', token);
+    } else {
+      localStorage.removeItem('accessToken');
+    }
   }
 }
