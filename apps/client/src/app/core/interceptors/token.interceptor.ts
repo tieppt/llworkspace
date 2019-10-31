@@ -22,18 +22,18 @@ export class TokenInterceptor implements HttpInterceptor {
     let request = req;
     // when request to authorize endpoint, this will handle when auth fail
     // then return to login page
-    const notHandleAuthFail = req.headers.get('NotHandleAuthFail');
+    const notHandleAuthFail = request.headers.get('NotHandleAuthFail');
     if (notHandleAuthFail) {
       request = request.clone({
-        headers: req.headers.delete('NotHandleAuthFail')
+        headers: request.headers.delete('NotHandleAuthFail')
       });
     }
-    const notAttachToken = req.headers.get('NotAttachToken');
+    const notAttachToken = request.headers.get('NotAttachToken');
     const auth = this.injector.get(AuthService);
     const router = this.injector.get(Router);
     if (notAttachToken) {
       request = request.clone({
-        headers: req.headers.delete('NotAttachToken')
+        headers: request.headers.delete('NotAttachToken')
       });
     } else if (auth) {
       request = request.clone({
